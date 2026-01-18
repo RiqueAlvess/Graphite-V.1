@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background-primary: #121826;
+    --background-secondary: #1A1D23;
+    --background-tertiary: #262B35;
+
+    --action-purple: #7C3AED;
+    --action-purple-hover: #6D28D9;
+    --action-blue: #3B82F6;
+    --action-blue-hover: #2563EB;
+    --action-green: #10B981;
+    --action-red: #EF4444;
+    --action-yellow: #F59E0B;
+
+    --text-primary: #F3F4F6;
+    --text-secondary: #D1D5DB;
+    --text-disabled: #6B7280;
+
+    --border: #374151;
+    --divider: #1F2937;
+    --neutral: #9CA3AF;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background-primary text-text-primary;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  html {
+    @apply dark;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-neutral rounded-md;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-text-disabled;
+}

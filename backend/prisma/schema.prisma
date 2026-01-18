@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ============================================
+// USERS
+// ============================================
+
+model User {
+  id                    String        @id @default(cuid())
+  email                 String        @unique
+  name                  String?
+  passwordHash          String
+  avatar                String?
+
+  // Subscription & Plan
+  subscriptionPlan      String        @default("free")      // "free" | "premium"
+  subscriptionStartDate DateTime?
+  subscriptionEndDate   DateTime?
+
+  // Freemium control (reset diário)
+  chartsCreatedToday    Int           @default(0)
+  lastChartResetDate    DateTime      @default(now())
+
+  // Relations
+  visualConfigs         VisualConfig[]
+  galleryItems          GalleryItem[]
+  activityLogs          ActivityLog[]
+
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  @@map("users")
+}
+
+// ============================================
+// CHARTS (Visual Configurations)
+// ============================================
+
+model VisualConfig {
+  id                    String        @id @default(cuid())
+  name                  String
+  description           String?
+
+  // Vega-Lite spec em JSON
+  vegaSpec              Json
+
+  // Metadados
+  chartType             String        // "bar", "line", "point", etc
+  isPublic              Boolean       @default(false)
+  publishedToGallery    Boolean       @default(false)
+
+  // Usuário dono
+  userId                String
+  user                  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Galeria
+  galleryItem           GalleryItem?
+
+  // Histórico de versões (opcional, para depois)
+  // versions              Version[]
+
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  @@map("visual_configs")
+  @@index([userId])
+}
+
+// ============================================
+// GALLERY (Public Charts)
+// ============================================
+
+model GalleryItem {
+  id                    String        @id @default(cuid())
+  title                 String
+  description           String?
+
+  // Preview/thumbnail
+  previewImageUrl       String?
+
+  // Chart original
+  visualConfigId        String        @unique
+  visualConfig          VisualConfig  @relation(fields: [visualConfigId], references: [id], onDelete: Cascade)
+
+  // Creator
+  creatorId             String
+  creator               User          @relation(fields: [creatorId], references: [id], onDelete: Cascade)
+
+  // Trending metrics
+  viewCount             Int           @default(0)
+  useCount              Int           @default(0)
+  favoriteCount         Int           @default(0)
+
+  // Categorização
+  category              String?       // "business", "scientific", "template", etc
+  tags                  String[]      @default([])  // PostgreSQL array
+
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  @@map("gallery_items")
+  @@index([creatorId])
+  @@index([category])
+}
+
+// ============================================
+// ACTIVITY LOG (Audit trail)
+// ============================================
+
+model ActivityLog {
+  id                    String        @id @default(cuid())
+  userId                String
+  user                  User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  action                String        // "CREATE_CHART", "UPDATE_CHART", "DELETE_CHART", etc
+  description           String?
+  metadata              Json?
+
+  createdAt             DateTime      @default(now())
+
+  @@map("activity_logs")
+  @@index([userId])
+}
+
+// ============================================
+// SUBSCRIPTION (Controle de planos)
+// ============================================
+
+model Subscription {
+  id                    String        @id @default(cuid())
+  userId                String        @unique
+
+  planType              String        // "free" | "premium"
+
+  // Stripe (depois)
+  stripeCustomerId      String?
+  stripeSubscriptionId  String?
+
+  currentPeriodStart    DateTime?
+  currentPeriodEnd      DateTime?
+
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+
+  @@map("subscriptions")
+  @@index([userId])
+}
