@@ -1,10 +1,12 @@
+import { ChartIcons } from '../lib/icons'
+
 export const CHART_TYPES = [
-  { value: 'bar', label: 'Barras Verticais', icon: '📊' },
-  { value: 'line', label: 'Linha', icon: '📈' },
-  { value: 'point', label: 'Pontos (Scatter)', icon: '⚫' },
-  { value: 'area', label: 'Área', icon: '📉' },
-  { value: 'rect', label: 'Heatmap', icon: '🟦' },
-  { value: 'arc', label: 'Pizza/Donut', icon: '🍩' },
+  { value: 'bar', label: 'Barras Verticais', icon: ChartIcons.bar },
+  { value: 'line', label: 'Linha', icon: ChartIcons.line },
+  { value: 'point', label: 'Pontos (Scatter)', icon: ChartIcons.point },
+  { value: 'area', label: 'Área', icon: ChartIcons.area },
+  { value: 'rect', label: 'Heatmap', icon: ChartIcons.rect },
+  { value: 'arc', label: 'Pizza/Donut', icon: ChartIcons.arc },
 ]
 
 export const DEFAULT_VEGA_SPEC = {

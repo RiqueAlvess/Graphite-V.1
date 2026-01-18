@@ -1,6 +1,8 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useAuthStore } from '../stores/authStore'
+import { FeatureIcons, DesignIcons } from '../lib/icons'
 
 export default function LandingPage() {
   const navigate = useNavigate()
@@ -20,7 +22,7 @@ export default function LandingPage() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
               <h1 className="text-2xl font-bold text-[#7C3AED]">
-                Vega Visual Editor
+                Graphite
               </h1>
             </div>
             <div className="flex items-center gap-4">
@@ -65,7 +67,9 @@ export default function LandingPage() {
         {/* Features */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
           <div className="bg-[#1A1D23] p-6 rounded-lg border border-[#374151]">
-            <div className="text-4xl mb-4">🎨</div>
+            <div className="text-4xl mb-4 text-[#7C3AED]">
+              <FontAwesomeIcon icon={DesignIcons.palette} />
+            </div>
             <h3 className="text-xl font-semibold mb-2">Editor Visual</h3>
             <p className="text-[#D1D5DB]">
               Customize cores, estilos e configurações sem tocar em JSON.
@@ -73,7 +77,9 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="bg-[#1A1D23] p-6 rounded-lg border border-[#374151]">
-            <div className="text-4xl mb-4">📊</div>
+            <div className="text-4xl mb-4 text-[#3B82F6]">
+              <FontAwesomeIcon icon={FeatureIcons.chart} />
+            </div>
             <h3 className="text-xl font-semibold mb-2">Compatível com Deneb</h3>
             <p className="text-[#D1D5DB]">
               Exporte JSON pronto para usar no Power BI com Deneb. Copy &
@@ -81,7 +87,9 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="bg-[#1A1D23] p-6 rounded-lg border border-[#374151]">
-            <div className="text-4xl mb-4">🚀</div>
+            <div className="text-4xl mb-4 text-[#10B981]">
+              <FontAwesomeIcon icon={FeatureIcons.rocket} />
+            </div>
             <h3 className="text-xl font-semibold mb-2">Grátis para Começar</h3>
             <p className="text-[#D1D5DB]">
               Crie 1 gráfico por dia gratuitamente. Upgrade quando precisar.

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useAuthStore } from '../stores/authStore'
 import { useChartStore } from '../stores/chartStore'
 import { useUIStore } from '../stores/uiStore'
 import Navbar from '../components/Layout/Navbar'
+import { FeatureIcons } from '../lib/icons'
 
 export default function DashboardPage() {
   const navigate = useNavigate()
@@ -16,7 +18,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (user?.id) {
-      loadCharts(user.id)
+      loadCharts()
     }
   }, [user?.id])
 
@@ -96,7 +98,9 @@ export default function DashboardPage() {
           </div>
         ) : charts.length === 0 ? (
           <div className="text-center py-20">
-            <div className="text-6xl mb-4">📊</div>
+            <div className="text-6xl mb-4 text-[#3B82F6]">
+              <FontAwesomeIcon icon={FeatureIcons.chart} />
+            </div>
             <h2 className="text-xl font-semibold text-[#F3F4F6] mb-2">
               Nenhum gráfico ainda
             </h2>

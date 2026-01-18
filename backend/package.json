@@ -1,7 +1,7 @@
 {
-  "name": "vega-editor-backend",
+  "name": "graphite-backend",
   "version": "1.0.0",
-  "description": "Backend API for Vega Visual Editor SaaS Platform",
+  "description": "Backend API for Graphite - Vega-Lite Visual Editor for Power BI",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",

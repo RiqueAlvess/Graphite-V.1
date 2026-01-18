@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useGalleryStore } from '../stores/galleryStore'
 import { useChartStore } from '../stores/chartStore'
 import { useUIStore } from '../stores/uiStore'
 import Navbar from '../components/Layout/Navbar'
+import { DesignIcons, FeatureIcons } from '../lib/icons'
 
 export default function GalleryPage() {
   const navigate = useNavigate()
-  const { items, loadGallery, isLoading } = useGalleryStore()
+  const { items, loadItems, isLoading } = useGalleryStore()
   const { createChart } = useChartStore()
   const { addToast } = useUIStore()
   const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
-    loadGallery()
+    loadItems()
   }, [])
 
   const handleCloneTemplate = async (item: any) => {
@@ -65,7 +67,9 @@ export default function GalleryPage() {
           </div>
         ) : filteredItems.length === 0 ? (
           <div className="text-center py-20">
-            <div className="text-6xl mb-4">🎨</div>
+            <div className="text-6xl mb-4 text-[#7C3AED]">
+              <FontAwesomeIcon icon={DesignIcons.palette} />
+            </div>
             <h2 className="text-xl font-semibold text-[#F3F4F6] mb-2">
               Nenhum template encontrado
             </h2>
@@ -82,7 +86,9 @@ export default function GalleryPage() {
               >
                 {/* Preview */}
                 <div className="aspect-video bg-[#262B35] flex items-center justify-center">
-                  <div className="text-6xl">📊</div>
+                  <div className="text-6xl text-[#3B82F6]">
+                    <FontAwesomeIcon icon={FeatureIcons.chart} />
+                  </div>
                 </div>
 
                 {/* Content */}
@@ -96,8 +102,14 @@ export default function GalleryPage() {
 
                   {/* Stats */}
                   <div className="flex items-center gap-4 text-xs text-[#9CA3AF] mb-4">
-                    <span>👁️ {item.viewCount || 0}</span>
-                    <span>🔄 {item.useCount || 0}</span>
+                    <span className="flex items-center gap-1">
+                      <FontAwesomeIcon icon={FeatureIcons.eye} />
+                      {item.viewCount || 0}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <FontAwesomeIcon icon={FeatureIcons.rotate} />
+                      {item.useCount || 0}
+                    </span>
                   </div>
 
                   {/* Actions */}

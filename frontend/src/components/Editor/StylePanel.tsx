@@ -1,9 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useChartStore } from '../../stores/chartStore'
 import { CHART_TYPES } from '../../constants/chartTypes'
+import { ActionIcons, DesignIcons } from '../../lib/icons'
+import AdvancedColorPanel from './AdvancedColorPanel'
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 
 export default function StylePanel() {
   const { currentChart, updateSpec } = useChartStore()
+  const [showAdvanced, setShowAdvanced] = useState(false)
 
   if (!currentChart) {
     return (
@@ -87,7 +92,9 @@ export default function StylePanel() {
                     : 'border-[#374151] hover:border-[#7C3AED]'
                 }`}
               >
-                <div className="text-2xl mb-1">{type.icon}</div>
+                <div className="text-2xl mb-1">
+                  <FontAwesomeIcon icon={type.icon} className="text-[#D1D5DB]" />
+                </div>
                 <div className="text-xs text-[#D1D5DB]">{type.label}</div>
               </button>
             ))}
@@ -236,15 +243,38 @@ export default function StylePanel() {
           </div>
         )}
 
+        {/* ===== TOGGLE AVANÇADO ===== */}
+        <div className="pt-4 border-t border-[#374151]">
+          <button
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="w-full px-4 py-3 bg-gradient-to-r from-[#7C3AED] to-[#3B82F6] hover:from-[#6D28D9] hover:to-[#2563EB] text-white font-semibold rounded-lg transition-all flex items-center justify-center gap-2 shadow-lg"
+          >
+            <FontAwesomeIcon icon={DesignIcons.magic} className="text-lg" />
+            <span>Configurações Avançadas</span>
+            <FontAwesomeIcon
+              icon={showAdvanced ? faChevronUp : faChevronDown}
+              className="text-sm"
+            />
+          </button>
+        </div>
+
+        {/* ===== PAINEL AVANÇADO ===== */}
+        {showAdvanced && (
+          <div className="pt-4 border-t border-[#374151]">
+            <AdvancedColorPanel />
+          </div>
+        )}
+
         {/* ===== PREVIEW JSON ===== */}
         <div className="pt-4 border-t border-[#374151]">
           <button
             onClick={() => {
               console.log('Spec atual:', currentChart.vegaSpec)
             }}
-            className="w-full px-4 py-2 bg-[#262B35] hover:bg-[#374151] text-[#D1D5DB] text-sm font-medium rounded-lg transition-colors"
+            className="w-full px-4 py-2 bg-[#262B35] hover:bg-[#374151] text-[#D1D5DB] text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
           >
-            📋 Ver Spec Completa (Console)
+            <FontAwesomeIcon icon={ActionIcons.code} />
+            <span>Ver Spec Completa (Console)</span>
           </button>
         </div>
       </div>
