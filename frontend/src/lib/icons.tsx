@@ -33,6 +33,14 @@ import {
   faLayerGroup,
   faCode,
   faFileCode,
+  faSquare,
+  faFont,
+  faMinus,
+  faMapLocationDot,
+  faCircleDot,
+  faRulerVertical,
+  faChartGantt,
+  faHashtag,
 } from '@fortawesome/free-solid-svg-icons'
 
 // Chart Type Icons
@@ -43,6 +51,16 @@ export const ChartIcons = {
   area: faChartArea,
   rect: faTableCells,
   arc: faChartPie,
+  boxplot: faChartSimple,
+  circle: faCircleDot,
+  square: faSquare,
+  tick: faMinus,
+  trail: faChartLine,
+  rule: faRulerVertical,
+  text: faFont,
+  geoshape: faMapLocationDot,
+  errorbar: faChartGantt,
+  errorband: faChartArea,
 } as const
 
 // Action Icons
