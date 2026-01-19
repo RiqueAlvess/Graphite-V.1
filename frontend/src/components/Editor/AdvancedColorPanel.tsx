@@ -61,19 +61,40 @@ export default function AdvancedColorPanel() {
 
   const applyGradient = () => {
     const encoding = currentChart.vegaSpec.encoding || {}
+    const markType = typeof currentChart.vegaSpec.mark === 'string'
+      ? currentChart.vegaSpec.mark
+      : currentChart.vegaSpec.mark?.type || 'bar'
 
-    updateVegaSpec({
-      encoding: {
-        ...encoding,
-        color: {
-          ...encoding.color,
-          scale: {
-            type: 'linear',
-            range: gradientStops.map((stop) => stop.color),
+    // Para gráficos arc, aplicar gradiente na cor nominal
+    if (markType === 'arc') {
+      updateVegaSpec({
+        encoding: {
+          ...encoding,
+          color: {
+            field: 'categoria',
+            type: 'nominal',
+            scale: {
+              range: gradientStops.map((stop) => stop.color),
+            },
           },
         },
-      },
-    })
+      })
+    } else {
+      // Para outros gráficos, aplicar gradiente no valor quantitativo
+      updateVegaSpec({
+        encoding: {
+          ...encoding,
+          color: {
+            field: 'valor',
+            type: 'quantitative',
+            scale: {
+              type: gradientType === 'linear' ? 'linear' : 'sqrt',
+              range: gradientStops.map((stop) => stop.color),
+            },
+          },
+        },
+      })
+    }
   }
 
   const applyConditionalColors = () => {

@@ -32,12 +32,70 @@ export default function StylePanel() {
         ? { type: currentChart.vegaSpec.mark }
         : currentChart.vegaSpec.mark || {}
 
-    updateVegaSpec({
-      mark: {
-        ...currentMark,
-        ...updates,
-      },
-    })
+    // Se estamos mudando o tipo de gráfico, ajustar encoding
+    if (updates.type) {
+      const newType = updates.type
+      const currentEncoding = currentChart.vegaSpec.encoding || {}
+
+      let newEncoding = { ...currentEncoding }
+
+      // Configuração especial para arc (pizza/donut)
+      if (newType === 'arc') {
+        newEncoding = {
+          theta: { field: 'valor', type: 'quantitative' },
+          color: { field: 'categoria', type: 'nominal' },
+        }
+      }
+      // Configuração para boxplot
+      else if (newType === 'boxplot') {
+        newEncoding = {
+          x: { field: 'categoria', type: 'nominal' },
+          y: { field: 'valor', type: 'quantitative' },
+        }
+      }
+      // Configuração para text
+      else if (newType === 'text') {
+        newEncoding = {
+          ...currentEncoding,
+          text: { field: 'valor', type: 'quantitative' },
+        }
+      }
+      // Configuração para rule (linha de referência)
+      else if (newType === 'rule') {
+        newEncoding = {
+          y: { field: 'valor', type: 'quantitative', aggregate: 'mean' },
+        }
+      }
+      // Configuração para tick
+      else if (newType === 'tick') {
+        newEncoding = {
+          x: { field: 'categoria', type: 'nominal' },
+          y: { field: 'valor', type: 'quantitative' },
+        }
+      }
+      // Configuração padrão para gráficos com x/y
+      else if (!currentEncoding.x && !currentEncoding.y && newType !== 'geoshape') {
+        newEncoding = {
+          x: { field: 'categoria', type: 'nominal', axis: { title: 'Categoria' } },
+          y: { field: 'valor', type: 'quantitative', axis: { title: 'Valor' } },
+        }
+      }
+
+      updateVegaSpec({
+        mark: {
+          ...currentMark,
+          ...updates,
+        },
+        encoding: newEncoding,
+      })
+    } else {
+      updateVegaSpec({
+        mark: {
+          ...currentMark,
+          ...updates,
+        },
+      })
+    }
   }
 
   const updateConfig = (updates: any) => {
@@ -78,26 +136,42 @@ export default function StylePanel() {
 
         {/* ===== TIPO DE GRÁFICO ===== */}
         <div>
-          <label className="block text-sm font-medium text-[#D1D5DB] mb-3">
+          <label className="block text-sm font-medium text-[#D1D5DB] mb-3 flex items-center gap-2">
+            <FontAwesomeIcon icon={DesignIcons.palette} className="text-[#7C3AED]" />
             Tipo de Gráfico
           </label>
-          <div className="grid grid-cols-2 gap-2">
-            {CHART_TYPES.map((type) => (
-              <button
-                key={type.value}
-                onClick={() => updateMark({ type: type.value })}
-                className={`p-3 rounded-lg border text-left transition-all ${
-                  currentMarkType === type.value
-                    ? 'border-[#7C3AED] bg-[#7C3AED] bg-opacity-10'
-                    : 'border-[#374151] hover:border-[#7C3AED]'
-                }`}
-              >
-                <div className="text-2xl mb-1">
-                  <FontAwesomeIcon icon={type.icon} className="text-[#D1D5DB]" />
+          <div className="space-y-4">
+            {['Principais', 'Pontos', 'Avançados'].map((category) => {
+              const categoryTypes = CHART_TYPES.filter((t: any) => t.category === category)
+              return (
+                <div key={category}>
+                  <h4 className="text-xs font-semibold text-[#9CA3AF] mb-2 uppercase tracking-wide">
+                    {category}
+                  </h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    {categoryTypes.map((type: any) => (
+                      <button
+                        key={type.value}
+                        onClick={() => updateMark({ type: type.value })}
+                        className={`p-3 rounded-lg border text-left transition-all ${
+                          currentMarkType === type.value
+                            ? 'border-[#7C3AED] bg-gradient-to-br from-[#7C3AED] to-[#3B82F6] bg-opacity-20 shadow-lg'
+                            : 'border-[#374151] hover:border-[#7C3AED] hover:bg-[#262B35]'
+                        }`}
+                      >
+                        <div className="text-xl mb-1">
+                          <FontAwesomeIcon
+                            icon={type.icon}
+                            className={currentMarkType === type.value ? 'text-[#A78BFA]' : 'text-[#9CA3AF]'}
+                          />
+                        </div>
+                        <div className="text-xs text-[#D1D5DB] leading-tight">{type.label}</div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="text-xs text-[#D1D5DB]">{type.label}</div>
-              </button>
-            ))}
+              )
+            })}
           </div>
         </div>
 
@@ -225,21 +299,90 @@ export default function StylePanel() {
             <label className="block text-sm font-medium text-[#D1D5DB] mb-2">
               Bordas Arredondadas
             </label>
-            <input
-              type="range"
-              min="0"
-              max="20"
-              step="1"
-              value={
-                typeof currentChart.vegaSpec.mark === 'object'
+            <div className="flex items-center gap-3">
+              <input
+                type="range"
+                min="0"
+                max="20"
+                step="1"
+                value={
+                  typeof currentChart.vegaSpec.mark === 'object'
+                    ? currentChart.vegaSpec.mark.cornerRadius || 0
+                    : 0
+                }
+                onChange={(e) =>
+                  updateMark({ cornerRadius: parseInt(e.target.value) })
+                }
+                className="flex-1"
+              />
+              <span className="text-sm text-[#9CA3AF] w-12 text-right">
+                {typeof currentChart.vegaSpec.mark === 'object'
                   ? currentChart.vegaSpec.mark.cornerRadius || 0
-                  : 0
-              }
-              onChange={(e) =>
-                updateMark({ cornerRadius: parseInt(e.target.value) })
-              }
-              className="w-full"
-            />
+                  : 0}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* ===== RAIO INTERNO (para arc - donut) ===== */}
+        {currentMarkType === 'arc' && (
+          <div>
+            <label className="block text-sm font-medium text-[#D1D5DB] mb-2">
+              Raio Interno (0 = Pizza, &gt;0 = Donut)
+            </label>
+            <div className="flex items-center gap-3">
+              <input
+                type="range"
+                min="0"
+                max="150"
+                step="10"
+                value={
+                  typeof currentChart.vegaSpec.mark === 'object'
+                    ? currentChart.vegaSpec.mark.innerRadius || 0
+                    : 0
+                }
+                onChange={(e) =>
+                  updateMark({ innerRadius: parseInt(e.target.value) })
+                }
+                className="flex-1"
+              />
+              <span className="text-sm text-[#9CA3AF] w-12 text-right">
+                {typeof currentChart.vegaSpec.mark === 'object'
+                  ? currentChart.vegaSpec.mark.innerRadius || 0
+                  : 0}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* ===== TAMANHO DO PONTO (para point, circle, square) ===== */}
+        {(['point', 'circle', 'square'].includes(currentMarkType)) && (
+          <div>
+            <label className="block text-sm font-medium text-[#D1D5DB] mb-2">
+              Tamanho do Ponto
+            </label>
+            <div className="flex items-center gap-3">
+              <input
+                type="range"
+                min="10"
+                max="500"
+                step="10"
+                value={
+                  typeof currentChart.vegaSpec.mark === 'object'
+                    ? currentChart.vegaSpec.mark.size || 100
+                    : 100
+                }
+                onChange={(e) =>
+                  updateMark({ size: parseInt(e.target.value) })
+                }
+                className="flex-1"
+              />
+              <span className="text-sm text-[#9CA3AF] w-12 text-right">
+                {typeof currentChart.vegaSpec.mark === 'object'
+                  ? currentChart.vegaSpec.mark.size || 100
+                  : 100}
+              </span>
+            </div>
           </div>
         )}
 
