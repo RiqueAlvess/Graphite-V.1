@@ -1,5 +1,8 @@
 import React from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useUIStore } from '../../stores/uiStore'
+import { StatusIcons } from '../../lib/icons'
+import { faXmark } from '@fortawesome/free-solid-svg-icons'
 
 export default function Toast() {
   const { toasts, removeToast } = useUIStore()
@@ -22,13 +25,13 @@ export default function Toast() {
   const getIcon = (type: string) => {
     switch (type) {
       case 'success':
-        return '✅'
+        return StatusIcons.success
       case 'error':
-        return '❌'
+        return StatusIcons.error
       case 'warning':
-        return '⚠️'
+        return StatusIcons.warning
       default:
-        return 'ℹ️'
+        return StatusIcons.info
     }
   }
 
@@ -44,13 +47,13 @@ export default function Toast() {
             animation: 'slideIn 0.3s ease-out',
           }}
         >
-          <span className="text-xl">{getIcon(toast.type)}</span>
+          <FontAwesomeIcon icon={getIcon(toast.type)} className="text-lg text-white" />
           <p className="text-sm font-medium text-white">{toast.message}</p>
           <button
             onClick={() => removeToast(toast.id)}
             className="ml-4 text-white hover:text-gray-200"
           >
-            ✕
+            <FontAwesomeIcon icon={faXmark} />
           </button>
         </div>
       ))}

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react'
 import vegaEmbed from 'vega-embed'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useChartStore } from '../../stores/chartStore'
+import { StatusIcons } from '../../lib/icons'
 
 export default function Preview() {
   const { currentChart } = useChartStore()
@@ -23,7 +25,7 @@ export default function Preview() {
       data: { values: sampleData },
     }
 
-    vegaEmbed(containerRef.current, specWithData, {
+    vegaEmbed(containerRef.current, specWithData as any, {
       actions: {
         export: true,
         source: false,
@@ -72,9 +74,12 @@ export default function Preview() {
       />
 
       <div className="mt-4 bg-[#262B35] p-3 rounded-lg border border-[#374151]">
-        <p className="text-xs text-[#9CA3AF]">
-          💡 <strong>Dica:</strong> Os dados mostrados são exemplos. No Power
-          BI, você conectará aos seus dados reais.
+        <p className="text-xs text-[#9CA3AF] flex items-start gap-2">
+          <FontAwesomeIcon icon={StatusIcons.lightbulb} className="text-[#F59E0B] mt-0.5" />
+          <span>
+            <strong>Dica:</strong> Os dados mostrados são exemplos. No Power
+            BI, você conectará aos seus dados reais.
+          </span>
         </p>
       </div>
     </div>

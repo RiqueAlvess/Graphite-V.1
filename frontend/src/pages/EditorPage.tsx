@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useChartStore } from '../stores/chartStore'
 import { useUIStore } from '../stores/uiStore'
 import Preview from '../components/Editor/Preview'
 import StylePanel from '../components/Editor/StylePanel'
 import Navbar from '../components/Layout/Navbar'
+import { ActionIcons } from '../lib/icons'
 
 export default function EditorPage() {
   const { id } = useParams<{ id: string }>()
@@ -106,15 +108,17 @@ export default function EditorPage() {
           <button
             onClick={handleSave}
             disabled={!isDirty || isLoading}
-            className="px-4 py-2 bg-[#10B981] hover:bg-[#059669] disabled:bg-[#6B7280] disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+            className="px-4 py-2 bg-[#10B981] hover:bg-[#059669] disabled:bg-[#6B7280] disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors flex items-center gap-2"
           >
-            {isLoading ? 'Salvando...' : '💾 Salvar'}
+            <FontAwesomeIcon icon={ActionIcons.save} />
+            <span>{isLoading ? 'Salvando...' : 'Salvar'}</span>
           </button>
           <button
             onClick={() => setShowExportModal(true)}
-            className="px-4 py-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white font-medium rounded-lg transition-colors"
+            className="px-4 py-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white font-medium rounded-lg transition-colors flex items-center gap-2"
           >
-            📤 Exportar
+            <FontAwesomeIcon icon={ActionIcons.export} />
+            <span>Exportar</span>
           </button>
         </div>
       </div>
@@ -165,15 +169,17 @@ export default function EditorPage() {
             <div className="flex gap-3">
               <button
                 onClick={handleExport}
-                className="flex-1 px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-medium rounded-lg transition-colors"
+                className="flex-1 px-4 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
               >
-                📋 Copiar JSON
+                <FontAwesomeIcon icon={ActionIcons.copy} />
+                <span>Copiar JSON</span>
               </button>
               <button
                 onClick={handleDownload}
-                className="flex-1 px-4 py-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white font-medium rounded-lg transition-colors"
+                className="flex-1 px-4 py-2 bg-[#3B82F6] hover:bg-[#2563EB] text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
               >
-                💾 Baixar Arquivo
+                <FontAwesomeIcon icon={ActionIcons.download} />
+                <span>Baixar Arquivo</span>
               </button>
               <button
                 onClick={() => setShowExportModal(false)}

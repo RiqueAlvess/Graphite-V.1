@@ -18,7 +18,7 @@ export default function Navbar() {
           <div className="flex items-center gap-8">
             <Link to="/dashboard" className="flex items-center">
               <h1 className="text-xl font-bold text-[#7C3AED]">
-                Vega Visual Editor
+                Graphite
               </h1>
             </Link>
 
